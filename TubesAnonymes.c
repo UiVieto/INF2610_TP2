@@ -17,15 +17,20 @@ int main() {
 
     if ((P2 = fork()) == 0) {
         if ((P1 = fork()) == 0) {
+            dup2(fd[WRITE], 1);              
             close(fd[READ]);
-            dup2(fd[WRITE], 1);       
+            close(fd[WRITE]);
+
             execl("/usr/bin/rev", "rev", "In.txt", NULL);
         }        
         waitpid(P1, NULL, 0);    
+
         int out = open("Out.txt", O_WRONLY | O_CREAT | O_TRUNC, 0660);
-        close(fd[WRITE]);   
         dup2(fd[READ], 0);
         dup2(out, 1);
+        close(fd[WRITE]);
+        close(fd[READ]);
+        close(out); 
 
         execl("/usr/bin/rev", "rev", NULL);
     }
