@@ -19,15 +19,14 @@ int main() {
             close(fd);
             execl("/usr/bin/rev", "rev", "In.txt", NULL);
         }
-        waitpid(P1, NULL, 0);
-
-        int fd = open("pipe", O_RDONLY);
-        int out = open("Outn.txt", O_WRONLY | O_CREAT | O_TRUNC, 0660);
-        dup2(fd, 0);
-        dup2(out, 1);
-        close(fd);
-        close(out);
-        
+        else{
+            int fd = open("pipe", O_RDONLY);
+            dup2(fd, 0);
+            close(fd);
+            int out = open("Outn.txt", O_WRONLY | O_CREAT | O_TRUNC);
+            dup2(out, 1);
+            close(out);
+        }
         execl("/usr/bin/rev", "rev", NULL);
         _exit(0);
     }
